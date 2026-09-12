@@ -1,12 +1,15 @@
 # Import libraries
 from tavily import TavilyClient 
 from dotenv import load_dotenv 
-
-import asyncio
+import certifi 
 import os 
 
 # Load dotenv
 load_dotenv()
+
+# If there is path issue with SSL
+os.environ['SSL_CERT_FILE'] = certifi.where()
+os.environ['REQUESTS_CA_BUNDLE'] = certifi.where()
 
 # Get API key for tavily 
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
