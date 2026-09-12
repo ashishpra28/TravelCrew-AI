@@ -22,3 +22,6 @@ langchain-tavily==0.2.18
 tavily-python==0.7.24
 
 langgraph-checkpoint-postgres==3.1.0
+
+psycopg[binary]==3.3.4
+psycopg_pool==3.3.1
