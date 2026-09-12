@@ -16,8 +16,9 @@ tavily_client = TavilyClient(
     api_key=TAVILY_API_KEY
 )
 
-# Create a tavily search tool function 
-def tavily_search(query):
+# Create a hotel search tool function 
+def search_hotels(query):
+    """ Search top 5 hotels on the internet according to the user query"""
     response = tavily_client.search(
         query=query,
         max_results=5

@@ -20,6 +20,7 @@ DEFAULT_ORIGIN_IATA = os.getenv("DEFAULT_ORIGIN_IATA","DEL")
 
 # Create a function for search flights 
 def search_flights(query:str): 
+    """Search flights for the trip plan according to the user query"""
     try:
         url = "http://api.aviationstack.com/v1/flights"
 
