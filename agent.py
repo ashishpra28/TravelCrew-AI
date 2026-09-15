@@ -201,14 +201,14 @@ def run_travel_agent(user_input:str, thread_id: str):
         "llm_call":response.get("llm_call",0),
     }
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
-    user_input = input("Enter the trip plan: ")
-    thread_id = "ashish2"
+#     user_input = input("Enter the trip plan: ")
+#     thread_id = "ashish2"
 
-    result = run_travel_agent(user_input=user_input, thread_id=thread_id)
+#     result = run_travel_agent(user_input=user_input, thread_id=thread_id)
 
-    print("\nFINAL RESPONSE\n")
+#     print("\nFINAL RESPONSE\n")
 
-    for mssg in result["messages"]:
-        print(mssg.content)
+#     for mssg in result["messages"]:
+#         print(mssg.content)
