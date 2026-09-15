@@ -100,3 +100,5 @@ dist/
 *.tmp
 *.temp
 *.bak
+
+test.py
