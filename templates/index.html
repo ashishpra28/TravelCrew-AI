@@ -2,9 +2,13 @@
 <html lang="en">
 <!-- ==================== HEAD ==================== -->
 <head>
+  <link
+  rel="icon"
+  href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232F50FF'/><text x='50' y='68' text-anchor='middle' font-size='58' fill='white'>✈</text></svg>"
+>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>TravelCrew AI — Your trip, planned by a crew of agents</title>
+<title>TravelCrew AI - Your trip, planned by a crew of AI Agents</title>
 <meta name="description" content="TravelCrew AI uses a crew of specialist AI agents to research flights, hotels and build a practical itinerary from a single travel request." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -131,7 +135,7 @@
   .annotation svg{ flex:none; }
   .ann-1{ top:-30px; left:6px; animation-delay:.5s; }
   .ann-2{ bottom:-46px; left:40px; color:var(--blue); animation-delay:.9s; }
-  .ann-3{ top:64%; left:-6px; animation-delay:1.3s; }
+  .ann-3{ top:auto; bottom:-48px; left:220px; animation-delay:1.3s; }
   @keyframes doodleIn{ to{ opacity:1; transform:translateY(0); } }
 
   /* scrapbook destination cards */
@@ -263,15 +267,23 @@
 
   .final-answer{
     background:#FCFCFE; border:1px solid var(--border); border-radius:var(--radius-m);
-    padding:30px 32px; line-height:1.7; font-size:15.5px;
+    padding:30px 32px; line-height:1.7; font-size:15.5px; overflow-x:auto;
   }
-  .final-answer h4{ font-family:var(--font-body); font-weight:800; font-size:18px; display:flex; align-items:center; gap:8px; margin:22px 0 10px; }
+  .final-answer h4{ font-family:var(--font-body); font-weight:800; font-size:20px; display:flex; align-items:center; gap:8px; margin:26px 0 12px; line-height:1.3; }
   .final-answer h4:first-child{ margin-top:0; }
-  .final-answer ul{ margin:8px 0 16px; padding-left:22px; }
-  .final-answer li{ margin-bottom:6px; }
-  .final-answer p{ margin:0 0 14px; }
+  .final-answer ul{ margin:8px 0 18px; padding-left:24px; }
+  .final-answer li{ margin-bottom:7px; }
+  .final-answer p{ margin:0 0 14px; line-height:1.7; }
   .final-answer strong{ font-weight:800; }
+  .final-answer em{ color:#555861; }
   .final-answer .icon-tag{ width:20px; height:20px; flex:none; color:var(--blue); }
+  .final-answer .md-table-wrap{ width:100%; overflow-x:auto; margin:16px 0 22px; border:1px solid var(--border); border-radius:12px; }
+  .final-answer table{ width:100%; min-width:650px; border-collapse:collapse; background:#fff; font-size:14px; }
+  .final-answer th{ background:#F1F3FF; font-weight:800; text-align:left; padding:12px 14px; border-bottom:2px solid var(--border); white-space:nowrap; }
+  .final-answer td{ padding:11px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  .final-answer tr:last-child td{ border-bottom:none; }
+  .final-answer hr{ border:0; border-top:1px solid var(--border); margin:24px 0; }
+  .download-plan-btn{ display:inline-flex; align-items:center; gap:8px; }
 
   .research-toggle{
     margin-top:26px; width:100%; display:flex; align-items:center; justify-content:space-between;
@@ -403,7 +415,7 @@
             <figcaption>Tokyo 🇯🇵</figcaption>
           </figure>
           <figure class="polaroid tape p-paris">
-            <img src="https://images.unsplash.com/photo-1502602898536-47ad22581b52?auto=format&fit=crop&w=400&q=60" alt="Eiffel Tower, Paris" loading="lazy" onerror="this.onerror=null;this.src='';this.alt='';this.style.background='linear-gradient(135deg,#FFD21C,#2F50FF)';">
+            <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=400&q=80" alt="Paris, France" loading="lazy" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1502602898536-47ad22581b52?auto=format&fit=crop&w=400&q=80';">
             <figcaption>Paris 🇫🇷</figcaption>
           </figure>
           <figure class="polaroid tape p-seoul">
@@ -515,6 +527,9 @@
             </div>
 
             <div class="planner-footer-actions">
+              <button type="button" class="btn btn-primary download-plan-btn" id="downloadPlanBtn">
+                ↓ Download Plan
+              </button>
               <button type="button" class="btn" id="newTripBtn">New Trip</button>
             </div>
           </div>
@@ -596,6 +611,7 @@
     els.researchBody = document.getElementById("researchBody");
     els.accordion = document.getElementById("accordion");
     els.newTripBtn = document.getElementById("newTripBtn");
+    els.downloadPlanBtn = document.getElementById("downloadPlanBtn");
     els.healthDot = document.getElementById("healthDot");
     els.healthText = document.getElementById("healthText");
     els.exampleChips = Array.prototype.slice.call(document.querySelectorAll(".example-chip"));
@@ -605,6 +621,7 @@
     els.form.addEventListener("submit", submitTrip);
     els.retryBtn.addEventListener("click", function(){ retryLastQuery(); });
     els.newTripBtn.addEventListener("click", resetTrip);
+    els.downloadPlanBtn.addEventListener("click", downloadPlan);
     els.researchToggle.addEventListener("click", toggleResearch);
 
     els.exampleChips.forEach(function(chip){
@@ -783,39 +800,147 @@
     if(!text || !String(text).trim()){
       return "<p>No details were returned for this section.</p>";
     }
-    var lines = String(text).replace(/\r\n/g, "\n").split("\n");
+
+    var lines = String(text)
+      .replace(/\r\n/g, "\n")
+      .replace(/\\([|*_#-])/g, "$1")
+      .split("\n");
+
     var html = "";
     var inList = false;
+    var i = 0;
 
-    function closeList(){ if(inList){ html += "</ul>"; inList = false; } }
+    function closeList(){
+      if(inList){ html += "</ul>"; inList = false; }
+    }
+
     function inline(str){
+      str = String(str || "");
+      str = str.replace(/^svg\d+\s*/i, "");
+      str = str.replace(/\\([|*_#-])/g, "$1");
       str = escapeHtml(str);
+      str = str.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
       str = str.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
-      str = str.replace(/\*(.+?)\*/g, "<em>$1</em>");
+      str = str.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, "<em>$1</em>");
       return str;
     }
 
-    lines.forEach(function(raw){
-      var line = raw.trim();
-      if(!line){ closeList(); return; }
+    function isTableSeparator(line){
+      var cleaned = line.replace(/^\s*\|/, "").replace(/\|\s*$/, "");
+      var cells = cleaned.split("|");
+      return cells.length >= 2 && cells.every(function(cell){
+        return /^\s*:?-{3,}:?\s*$/.test(cell);
+      });
+    }
 
-      var headingMatch = line.match(/^#{1,3}\s+(.*)/);
+    function isTableRow(line){
+      return line.trim().startsWith("|") && line.trim().endsWith("|") && line.split("|").length >= 3;
+    }
+
+    function parseTable(startIndex){
+      if(startIndex + 1 >= lines.length || !isTableRow(lines[startIndex]) || !isTableSeparator(lines[startIndex + 1])) return null;
+
+      var headerCells = lines[startIndex].trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map(function(cell){ return cell.trim(); });
+      var rows = [];
+      var j = startIndex + 2;
+
+      while(j < lines.length && isTableRow(lines[j])){
+        rows.push(lines[j].trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map(function(cell){ return cell.trim(); }));
+        j++;
+      }
+
+      var tableHtml = '<div class="md-table-wrap"><table><thead><tr>';
+      headerCells.forEach(function(cell){ tableHtml += "<th>" + inline(cell) + "</th>"; });
+      tableHtml += "</tr></thead><tbody>";
+
+      rows.forEach(function(row){
+        tableHtml += "<tr>";
+        headerCells.forEach(function(_, index){ tableHtml += "<td>" + inline(row[index] || "") + "</td>"; });
+        tableHtml += "</tr>";
+      });
+
+      tableHtml += "</tbody></table></div>";
+      return { html: tableHtml, nextIndex: j };
+    }
+
+    while(i < lines.length){
+      var raw = lines[i];
+      var line = raw.trim();
+
+      if(!line){ closeList(); i++; continue; }
+
+      if(/^\\?-{3,}\s*$/.test(line) || /^\\?---+\s*$/.test(line)){
+        closeList();
+        html += "<hr>";
+        i++;
+        continue;
+      }
+
+      var table = parseTable(i);
+      if(table){
+        closeList();
+        html += table.html;
+        i = table.nextIndex;
+        continue;
+      }
+
+      if(/^svg\d+$/i.test(line)){
+        i++;
+        continue;
+      }
+
+      var headingMatch = line.match(/^#{1,4}\s+(.*)/);
+      var boldHeadingMatch = line.match(/^\*\*(\d+[\.\)]\s+[^*]+)\*\*\s*$/);
+      var numberedHeadingMatch = line.match(/^(\d+[\.\)]\s+.+)$/);
       var bulletMatch = line.match(/^[-*•]\s+(.*)/);
 
       if(headingMatch){
         closeList();
-        var headingText = headingMatch[1];
+        var headingText = headingMatch[1].replace(/^svg\d+\s*/i, "").trim();
         html += "<h4>" + iconFor(headingText) + "<span>" + inline(headingText) + "</span></h4>";
+      } else if(boldHeadingMatch){
+        closeList();
+        var boldHeading = boldHeadingMatch[1].trim();
+        html += "<h4>" + iconFor(boldHeading) + "<span>" + inline(boldHeading) + "</span></h4>";
+      } else if(numberedHeadingMatch && line.length < 100){
+        closeList();
+        html += "<h4>" + iconFor(line) + "<span>" + inline(line) + "</span></h4>";
       } else if(bulletMatch){
         if(!inList){ html += "<ul>"; inList = true; }
         html += "<li>" + inline(bulletMatch[1]) + "</li>";
       } else {
         closeList();
+        if(isTableSeparator(line)){ i++; continue; }
         html += "<p>" + inline(line) + "</p>";
       }
-    });
+
+      i++;
+    }
+
     closeList();
     return html;
+  }
+
+  function downloadPlan(){
+    var answer = els.finalAnswer.innerText.trim();
+    if(!answer) return;
+
+    var content =
+      "TRAVELCREW AI — TRIP PLAN\n" +
+      "========================================\n\n" +
+      answer +
+      "\n\n========================================\n" +
+      "Generated by TravelCrew AI\n";
+
+    var blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement("a");
+    link.href = url;
+    link.download = "travelcrew-trip-plan.txt";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   }
 
   /* ---------- Result rendering ---------- */
