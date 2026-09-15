@@ -71,6 +71,9 @@ async def health():
         "message":"TravelCrew - Multi AI Agent Travle Planner is running"
     }
 
+@app.get("/favicon.ico")
+async def favicon():
+    return JSONResponse(content={})
 
 if __name__ == "__main__":
     uvicorn.run(
