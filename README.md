@@ -82,30 +82,11 @@ The workflow is orchestrated using **LangGraph**, while conversation state is pe
           (Checkpoint / Memory)
 ```
 
+<img width="410" height="302" alt="image" src="https://github.com/user-attachments/assets/af012cd2-2f52-4a13-b881-8757eb1584ed" />
+
+
 ---
 
-## 🔄 Workflow
-
-The current workflow follows a sequential multi-agent architecture:
-
-```text
-START
-  │
-  ▼
-Flight Agent
-  │
-  ▼
-Hotel Agent
-  │
-  ▼
-Itinerary Agent
-  │
-  ▼
-Final Agent
-  │
-  ▼
-END
-```
 
 ### 1. Flight Agent
 
@@ -158,13 +139,10 @@ Combines the available information and produces the final response for the user 
 - HTML
 - CSS
 - JavaScript
-- Jinja2 Templates
 
 ### Deployment
 
 - Render
-- Vercel
-- Docker
 
 ---
 
@@ -183,7 +161,6 @@ TravelCrew-AI/
 ├── tools/
 │   ├── flight_tool.py
 │   ├── hotel_tool.py
-│   └── tavily_search.py
 │
 ├── .dockerignore
 ├── .env
@@ -194,216 +171,9 @@ TravelCrew-AI/
 ├── LICENSE
 ├── README.md
 ├── requirements.txt
-└── test.py
 ```
 
 > **Note:** `.env` contains secrets and should not be committed to GitHub. Add it to `.gitignore`.
-
----
-
-## 🔑 Environment Variables
-
-For local development, create a `.env` file:
-
-```env
-GROQ_API_KEY=your_groq_api_key
-TAVILY_API_KEY=your_tavily_api_key
-AVIATION_API_KEY=your_aviationstack_api_key
-DATABASE_URL=your_postgresql_connection_string
-DEFAULT_ORIGIN_IATA=DEL
-```
-
-For production, configure these variables in the hosting platform's environment-variable settings instead of committing them to the repository.
-
----
-
-## 💻 Run Locally
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/ashishpra28/TravelCrew-AI.git
-cd TravelCrew-AI
-```
-
-### 2. Create a virtual environment
-
-```bash
-python -m venv .venv
-```
-
-Activate it on Windows:
-
-```bash
-.venv\\Scripts\\activate
-```
-
-### 3. Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Configure environment variables
-
-Create `.env` with the variables shown above.
-
-### 5. Run the application
-
-```bash
-uvicorn app:app --reload
-```
-
-Open:
-
-```text
-http://127.0.0.1:8000
-```
-
----
-
-## 🔌 API Endpoints
-
-### Health Check
-
-```http
-GET /health
-```
-
-### Travel Planning
-
-```http
-POST /travel
-```
-
-Example request:
-
-```json
-{
-  "user_query": "Plan a trip from India to Japan for 7 days",
-  "thread_id": "ashish2"
-}
-```
-
-The API executes the LangGraph workflow and returns the generated travel plan along with workflow results.
-
----
-
-## 🧠 Why LangGraph?
-
-Travel planning naturally involves multiple steps and different responsibilities.
-
-LangGraph provides a structured way to:
-
-- Define shared application state
-- Connect specialized agent nodes
-- Control workflow execution
-- Pass information between agents
-- Persist state using checkpoints
-- Maintain conversation threads
-- Extend the workflow with conditional or parallel execution later
-
-The current implementation uses a sequential graph, making the workflow easy to understand and extend.
-
----
-
-## 💾 Persistence & Memory
-
-TravelCrew AI uses **PostgreSQL** with LangGraph's PostgreSQL checkpointing system.
-
-A `thread_id` is used to identify a conversation.
-
-```text
-User
- │
- ▼
-thread_id
- │
- ▼
-LangGraph
- │
- ▼
-PostgreSQL Checkpoint
- │
- ▼
-Persistent conversation state
-```
-
----
-
-## 🧪 Example
-
-### User Request
-
-```text
-Plan a trip from India to Japan for 7 days.
-```
-
-### Workflow
-
-```text
-User Request
-     ↓
-Flight Search
-     ↓
-Hotel Search
-     ↓
-Itinerary Generation
-     ↓
-Final Travel Plan
-```
-
----
-
-## ☁️ Deployment
-
-The application is deployed as a FastAPI application.
-
-### Production URL
-
-https://travelcrew-ai.onrender.com/
-
-For production deployment, configure:
-
-```text
-GROQ_API_KEY
-TAVILY_API_KEY
-AVIATION_API_KEY
-DATABASE_URL
-DEFAULT_ORIGIN_IATA
-```
-
-The frontend uses a relative API endpoint:
-
-```javascript
-var API_BASE = "";
-```
-
-This allows the frontend to communicate with the FastAPI backend through the same deployed domain.
-
----
-
-## 🐳 Docker
-
-The project includes a `Dockerfile` for containerized deployment.
-
-Build:
-
-```bash
-docker build -t travelcrew-ai .
-```
-
-Run:
-
-```bash
-docker run -p 8000:8000 travelcrew-ai
-```
-
-Then open:
-
-```text
-http://127.0.0.1:8000
-```
 
 ---
 
@@ -424,29 +194,6 @@ http://127.0.0.1:8000
 
 ---
 
-## ⚠️ Disclaimer
-
-TravelCrew AI is a portfolio project. Search results, flight information, hotel information, prices, availability, and itinerary suggestions may not always represent real-time or bookable information.
-
-Always verify important travel details directly with airlines, hotels, and official travel providers before making a booking.
-
----
-
-## 👨‍💻 Author
-
-**Ashish Prajapati**  
-BCA Student | Generative AI | Agentic AI | Data Science
-
-GitHub: https://github.com/ashishpra28
-
----
-
-## ⭐ Support
-
 If you find this project interesting, consider giving the repository a ⭐ on GitHub.
 
 ---
-
-<p align="center">
-  Built with Python, LangGraph, LangChain, FastAPI, PostgreSQL & AI
-</p>
