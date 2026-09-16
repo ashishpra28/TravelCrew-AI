@@ -1,128 +1,454 @@
-![alt text](image.png)
+# ✈️ TravelCrew AI
 
-# ✈️ TravelCrew AI - A Multi-Agent Travel Planner
+> A multi-agent AI travel planning assistant that combines flight search, hotel discovery, itinerary generation, and persistent conversation state into one workflow.
 
-An open-source AI travel planner that turns a natural-language trip request into a practical travel plan with flight suggestions, hotel ideas, and a day-by-day itinerary. The project uses a multi-agent workflow built with LangGraph, LangChain, and FastAPI.
+## 🌐 Live Demo
 
-## Why this project?
+**Live Application:** https://travelcrew-ai.onrender.com/
 
-Planning a trip usually means jumping between multiple websites, tools, and spreadsheets. This project brings that flow into one experience by combining:
+---
 
-- a flight-search agent,
-- a hotel-research agent,
-- an itinerary-planning agent, and
-- a final response agent,
+## 📸 Application Preview
 
-all coordinated through a LangGraph workflow.
+<p align="center">
+  <img src="![alt text](image.png)" alt="TravelCrew AI Frontend" width="100%">
+</p>
 
-## Features
+---
 
-- ✈️ Flight research using AviationStack
-- 🏨 Hotel suggestions using Tavily search
-- 🧠 Multi-agent orchestration with LangGraph
-- 📝 Structured travel itinerary generation
-- 🌐 FastAPI backend with a simple web interface
-- 💾 Conversation state persistence using PostgreSQL
-- ⚡ LLM-powered responses with Groq
+## 🚀 Overview
 
-## Tech Stack
+**TravelCrew AI** is a multi-agent travel planning application built with **LangGraph, LangChain, FastAPI, PostgreSQL, and LLMs**.
 
-- Python 3.12
-- FastAPI
-- Jinja2 + HTML/CSS/JavaScript frontend
-- LangGraph
-- LangChain
-- Groq LLMs
-- PostgreSQL
-- Tavily API
-- AviationStack API
+Instead of handling the complete travel-planning task with a single LLM call, the application separates the workflow into specialized agents:
 
-## Project Structure
+- ✈️ **Flight Agent** — searches for relevant flight information
+- 🏨 **Hotel Agent** — finds hotel suggestions
+- 🗺️ **Itinerary Agent** — creates a practical day-wise itinerary
+- 🤖 **Final Agent** — combines the collected information into a clean travel plan
+
+The workflow is orchestrated using **LangGraph**, while conversation state is persisted using **PostgreSQL checkpointing**.
+
+---
+
+## ✨ Features
+
+- 🤖 Multi-agent travel planning workflow
+- ✈️ Flight information search
+- 🏨 Hotel discovery
+- 🗺️ AI-generated day-wise itinerary
+- 🧠 Persistent conversation state using PostgreSQL
+- 🔗 Thread-based conversation management
+- ⚡ FastAPI backend
+- 🎨 Responsive web frontend
+- ☁️ Production deployment
+- 🔐 Environment-variable based API configuration
+- 🐳 Docker support
+
+---
+
+## 🧠 Architecture
 
 ```text
-.
-├── app.py                # FastAPI app entry point
-├── agent.py              # LangGraph travel workflow
-├── requirements.txt      # Python dependencies
-├── templates/            # Frontend templates
-└── tools/                # Flight and hotel search integrations
+                    User
+                     │
+                     ▼
+              ┌──────────────┐
+              │  FastAPI API │
+              └──────┬───────┘
+                     │
+                     ▼
+              ┌──────────────┐
+              │   LangGraph  │
+              │   Workflow   │
+              └──────┬───────┘
+                     │
+        ┌────────────┼────────────┐
+        ▼            ▼            ▼
+   Flight Agent  Hotel Agent  Itinerary Agent
+        │            │            │
+        ▼            ▼            ▼
+   Flight Data    Hotel Data    AI Itinerary
+        │            │            │
+        └────────────┼────────────┘
+                     ▼
+              ┌──────────────┐
+              │ Final Agent  │
+              └──────┬───────┘
+                     │
+                     ▼
+              Final Travel Plan
+                     │
+                     ▼
+              PostgreSQL
+          (Checkpoint / Memory)
 ```
 
-## Prerequisites
+---
 
-Before running the project locally, make sure you have:
+## 🔄 Workflow
 
-- Python 3.12 
-- PostgreSQL running and accessible
-- API keys for:
-  - Groq
-  - Tavily
-  - AviationStack
+The current workflow follows a sequential multi-agent architecture:
 
-## Environment Variables
+```text
+START
+  │
+  ▼
+Flight Agent
+  │
+  ▼
+Hotel Agent
+  │
+  ▼
+Itinerary Agent
+  │
+  ▼
+Final Agent
+  │
+  ▼
+END
+```
 
-Create a .env file in the project root with the following variables:
+### 1. Flight Agent
+
+Receives the user's travel request and retrieves flight-related information using the flight search tool.
+
+### 2. Hotel Agent
+
+Uses the user's destination and travel request to search for relevant hotel options.
+
+### 3. Itinerary Agent
+
+Uses the user request, flight information, and hotel information to generate a practical day-wise itinerary using an LLM.
+
+### 4. Final Agent
+
+Combines the available information and produces the final response for the user in a clean and readable format.
+
+---
+
+## 🛠️ Tech Stack
+
+### AI / LLM
+
+- Python
+- LangChain
+- LangGraph
+- Groq
+- OpenAI-compatible LLM
+
+### Backend
+
+- FastAPI
+- Pydantic
+- Uvicorn
+
+### Database
+
+- PostgreSQL
+- `psycopg`
+- LangGraph PostgreSQL Checkpoint
+
+### External APIs / Tools
+
+- Tavily Search
+- AviationStack
+- Python Requests
+
+### Frontend
+
+- HTML
+- CSS
+- JavaScript
+- Jinja2 Templates
+
+### Deployment
+
+- Render
+- Vercel
+- Docker
+
+---
+
+## 📁 Project Structure
+
+```text
+TravelCrew-AI/
+│
+├── project_structure/
+│   ├── workflow.excalidraw
+│   └── workflow.png
+│
+├── templates/
+│   └── index.html
+│
+├── tools/
+│   ├── flight_tool.py
+│   ├── hotel_tool.py
+│   └── tavily_search.py
+│
+├── .dockerignore
+├── .env
+├── .gitignore
+├── agent.py
+├── app.py
+├── Dockerfile
+├── LICENSE
+├── README.md
+├── requirements.txt
+└── test.py
+```
+
+> **Note:** `.env` contains secrets and should not be committed to GitHub. Add it to `.gitignore`.
+
+---
+
+## 🔑 Environment Variables
+
+For local development, create a `.env` file:
 
 ```env
-DATABASE_URL=postgresql://user:password@localhost:5432/travel_db
 GROQ_API_KEY=your_groq_api_key
-AVIATIONSTACK_API_KEY=your_aviationstack_api_key
 TAVILY_API_KEY=your_tavily_api_key
-DEFAULT_ORIGIN_IATA=DAC
+AVIATION_API_KEY=your_aviationstack_api_key
+DATABASE_URL=your_postgresql_connection_string
+DEFAULT_ORIGIN_IATA=DEL
 ```
 
-## Installation
+For production, configure these variables in the hosting platform's environment-variable settings instead of committing them to the repository.
+
+---
+
+## 💻 Run Locally
+
+### 1. Clone the repository
 
 ```bash
-python -m venv .venv or # uv venv 
-source .venv/bin/activate   # On Windows: .venv\Scripts\activate
-pip install -r requirements.txt # or uv pip install -r requirements.txt
+git clone https://github.com/ashishpra28/TravelCrew-AI.git
+cd TravelCrew-AI
 ```
 
-## Running the App
-
-Start the FastAPI server:
+### 2. Create a virtual environment
 
 ```bash
-python app.py
+python -m venv .venv
 ```
 
-Then open your browser at:
+Activate it on Windows:
+
+```bash
+.venv\\Scripts\\activate
+```
+
+### 3. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Configure environment variables
+
+Create `.env` with the variables shown above.
+
+### 5. Run the application
+
+```bash
+uvicorn app:app --reload
+```
+
+Open:
 
 ```text
-http://127.0.0.1:8000/
+http://127.0.0.1:8000
 ```
 
-## API Endpoints
+---
 
-- GET /health - Health check
-- POST /api/travel - Submit a travel request
+## 🔌 API Endpoints
+
+### Health Check
+
+```http
+GET /health
+```
+
+### Travel Planning
+
+```http
+POST /travel
+```
 
 Example request:
 
-```bash
-curl -X POST http://127.0.0.1:8000/api/travel \
-  -H "Content-Type: application/json" \
-  -d '{"message":"Plan a 3-day trip to Tokyo with a budget of $1200"}'
+```json
+{
+  "user_query": "Plan a trip from India to Japan for 7 days",
+  "thread_id": "ashish2"
+}
 ```
 
-## How the Workflow Works
+The API executes the LangGraph workflow and returns the generated travel plan along with workflow results.
 
-1. The user submits a travel request.
-2. The flight agent gathers flight-related information.
-3. The hotel agent searches for accommodation suggestions.
-4. The itinerary agent creates a practical travel plan.
-5. The final agent formats the result into a polished response.
+---
 
-## Contributing
+## 🧠 Why LangGraph?
 
-Contributions are welcome. If you want to improve the app, add new travel features, or fix issues:
+Travel planning naturally involves multiple steps and different responsibilities.
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Open a pull request
+LangGraph provides a structured way to:
 
-## Acknowledgments
+- Define shared application state
+- Connect specialized agent nodes
+- Control workflow execution
+- Pass information between agents
+- Persist state using checkpoints
+- Maintain conversation threads
+- Extend the workflow with conditional or parallel execution later
 
-This project is built with the help of modern LLM tooling and travel APIs, and it is intended as a practical example of combining LangGraph agents with real-world applications.
+The current implementation uses a sequential graph, making the workflow easy to understand and extend.
+
+---
+
+## 💾 Persistence & Memory
+
+TravelCrew AI uses **PostgreSQL** with LangGraph's PostgreSQL checkpointing system.
+
+A `thread_id` is used to identify a conversation.
+
+```text
+User
+ │
+ ▼
+thread_id
+ │
+ ▼
+LangGraph
+ │
+ ▼
+PostgreSQL Checkpoint
+ │
+ ▼
+Persistent conversation state
+```
+
+---
+
+## 🧪 Example
+
+### User Request
+
+```text
+Plan a trip from India to Japan for 7 days.
+```
+
+### Workflow
+
+```text
+User Request
+     ↓
+Flight Search
+     ↓
+Hotel Search
+     ↓
+Itinerary Generation
+     ↓
+Final Travel Plan
+```
+
+---
+
+## ☁️ Deployment
+
+The application is deployed as a FastAPI application.
+
+### Production URL
+
+https://travelcrew-ai.onrender.com/
+
+For production deployment, configure:
+
+```text
+GROQ_API_KEY
+TAVILY_API_KEY
+AVIATION_API_KEY
+DATABASE_URL
+DEFAULT_ORIGIN_IATA
+```
+
+The frontend uses a relative API endpoint:
+
+```javascript
+var API_BASE = "";
+```
+
+This allows the frontend to communicate with the FastAPI backend through the same deployed domain.
+
+---
+
+## 🐳 Docker
+
+The project includes a `Dockerfile` for containerized deployment.
+
+Build:
+
+```bash
+docker build -t travelcrew-ai .
+```
+
+Run:
+
+```bash
+docker run -p 8000:8000 travelcrew-ai
+```
+
+Then open:
+
+```text
+http://127.0.0.1:8000
+```
+
+---
+
+## 🔮 Future Improvements
+
+- 🔀 Parallel agent execution
+- 🧭 Conditional routing
+- 🔁 Iterative planning and refinement
+- 💰 More detailed budget planning
+- 🌦️ Weather-aware itinerary planning
+- 🗺️ Maps and location integration
+- ✈️ More structured real-time flight data
+- 🏨 More structured hotel data
+- 🧠 Better long-term travel preferences
+- 📄 Downloadable travel plans
+- 🔐 Authentication and user accounts
+- 📊 Travel analytics and history
+
+---
+
+## ⚠️ Disclaimer
+
+TravelCrew AI is a portfolio project. Search results, flight information, hotel information, prices, availability, and itinerary suggestions may not always represent real-time or bookable information.
+
+Always verify important travel details directly with airlines, hotels, and official travel providers before making a booking.
+
+---
+
+## 👨‍💻 Author
+
+**Ashish Prajapati**  
+BCA Student | Generative AI | Agentic AI | Data Science
+
+GitHub: https://github.com/ashishpra28
+
+---
+
+## ⭐ Support
+
+If you find this project interesting, consider giving the repository a ⭐ on GitHub.
+
+---
+
+<p align="center">
+  Built with Python, LangGraph, LangChain, FastAPI, PostgreSQL & AI
+</p>
