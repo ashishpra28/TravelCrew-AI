@@ -11,7 +11,7 @@
 ## 📸 Application Preview
 
 <p align="center">
-  <img src="![alt text](image.png)" alt="TravelCrew AI Frontend" width="100%">
+  <img src="image.png" alt="TravelCrew AI Frontend" width="100%">
 </p>
 
 ---
