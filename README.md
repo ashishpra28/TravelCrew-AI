@@ -10,9 +10,7 @@
 
 ## 📸 Application Preview
 
-<p align="center">
-  <img src="image.png" alt="TravelCrew AI Frontend" width="100%">
-</p>
+<img width="941" height="406" alt="image" src="https://github.com/user-attachments/assets/df2dead2-844c-4b18-bb6b-8a506f32d24d" />
 
 ---
 
